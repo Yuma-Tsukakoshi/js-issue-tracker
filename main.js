@@ -4,8 +4,8 @@ function saveIssue(e) {
   let issueDesc = document.getElementById('issueDescInput').value;
   let issueSeverity = document.getElementById('issueSeverityInput').value;
   let issueAssignedTo = document.getElementById('issueAssignedToInput').value;
-  let issueId = chance.guid();
-  let issueStatus = 'Open';
+  let issueId = chance.guid(); //chance.jsの機能でランダムな数字の配列を生成する
+  let issueStatus = 'Open'; //defaultでopenにしておいて終わったらcloseにする
 
   let issue = {
     id: issueId,
@@ -14,6 +14,9 @@ function saveIssue(e) {
     assignedTo: issueAssignedTo,
     status: issueStatus
   }
+
+  //localStorageメソッドの紹介 
+  //getItem:値の読み込み  //setItem:値の保存
 
   if (localStorage.getItem('issues') == null) {
     let issues = [];
@@ -26,13 +29,18 @@ function saveIssue(e) {
   }
 
   document.getElementById('issueInputForm').reset();
+   //formの中身をclear
 
-  fetchIssues();
+  fetchIssues(); //issueを更新する
 
   e.preventDefault();
+  //event.preventDefaultメソッドは、submitイベントの発生元であるフォームが持つデフォルトの動作をキャンセルするメソッドです。
+  // event の Default の動作を prevent する（妨げる） なので読んだまま。
+  // 送信後defaultの値が入るのを防ぐ
 }
 
 function setStatusClosed(id) {
+  //parse => JSON 文字列を取得し、JavaScriptオブジェクトに変換
   let issues = JSON.parse(localStorage.getItem('issues'));
 
   for (var i = 0; i < issues.length; i++) {
@@ -41,6 +49,7 @@ function setStatusClosed(id) {
     }
   }
 
+  //値を更新したらissuesのJSON配列もすぐに更新する
   localStorage.setItem('issues', JSON.stringify(issues));
 
   fetchIssues();
@@ -51,10 +60,12 @@ function deleteIssue(id) {
 
   for (var i = 0; i < issues.length; i++) {
     if (issues[i].id == id) {
-      issues.splice(i, 1);
+      issues.splice(i, 1)
+      //第二引数 : １要素文取り除く
     }
   }
-
+  //stringfy => objectを取得し、JSONに変換する
+  //issuesにjsonデータを入れる
   localStorage.setItem('issues', JSON.stringify(issues));
 
   fetchIssues();
@@ -73,7 +84,7 @@ function fetchIssues() {
     let assignedTo = issues[i].assignedTo;
     let status = issues[i].status;
 
-    issuesList.innerHTML +=   '<div class="well">'+
+    issuesList.innerHTML +=   '<div class="well" style="background-color: #eee; padding: 36px; margin:35px">'+
                               '<h6>Issue ID: ' + id + '</h6>'+
                               '<p><span class="label label-info">' + status + '</span></p>'+
                               '<h3>' + desc + '</h3>'+
